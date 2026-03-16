@@ -1,8 +1,13 @@
 package com.mycontactsapp.service;
 
+import java.util.Optional;
+
 import com.mycontactsapp.builder.ContactBuilder;
 import com.mycontactsapp.contact.Contact;
 import com.mycontactsapp.contact.ContactRepository;
+import com.mycontactsapp.decorator.BasicContactDisplay;
+import com.mycontactsapp.decorator.ContactDisplay;
+import com.mycontactsapp.decorator.PrettyContactDisplay;
 
 public class ContactService {
     public void createContact(String type, String name, String phone, String email) {
@@ -20,5 +25,19 @@ public class ContactService {
     public void listContacts() {
         System.out.println("\n--- All Contacts ---");
         ContactRepository.getAllContacts().forEach(System.out::println);
+    }
+    
+    public void viewContact(String name) {
+        Optional<Contact> contactOpt = ContactRepository.getAllContacts().stream()
+                .filter(c -> c.getName().equalsIgnoreCase(name))
+                .findFirst();
+
+        if (contactOpt.isPresent()) {
+            Contact contact = contactOpt.get();
+            ContactDisplay display = new PrettyContactDisplay(new BasicContactDisplay());
+            System.out.println(display.format(contact));
+        } else {
+            System.out.println("Contact not found: " + name);
+        }
     }
 }

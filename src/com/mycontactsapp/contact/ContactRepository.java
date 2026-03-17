@@ -13,4 +13,8 @@ public class ContactRepository {
     public static List<Contact> getAllContacts() {
         return contacts;
     }
+    
+    public static boolean delete(Contact contact) {
+        return contacts.remove(contact);
+    }
 }

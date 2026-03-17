@@ -3,6 +3,8 @@ package com.mycontactsapp.service;
 import java.util.Optional;
 
 import com.mycontactsapp.builder.ContactBuilder;
+import com.mycontactsapp.command.CommandManager;
+import com.mycontactsapp.command.EditContactCommand;
 import com.mycontactsapp.contact.Contact;
 import com.mycontactsapp.contact.ContactRepository;
 import com.mycontactsapp.decorator.BasicContactDisplay;
@@ -36,6 +38,22 @@ public class ContactService {
             Contact contact = contactOpt.get();
             ContactDisplay display = new PrettyContactDisplay(new BasicContactDisplay());
             System.out.println(display.format(contact));
+        } else {
+            System.out.println("Contact not found: " + name);
+        }
+    }
+    
+    
+    public void editContact(String name, String newName, String newPhone, String newEmail) {
+        Optional<Contact> contactOpt = ContactRepository.getAllContacts().stream()
+                .filter(c -> c.getName().equalsIgnoreCase(name))
+                .findFirst();
+
+        if (contactOpt.isPresent()) {
+            Contact contact = contactOpt.get();
+            CommandManager manager = new CommandManager();
+            EditContactCommand cmd = new EditContactCommand(contact, newName, newPhone, newEmail);
+            manager.executeCommand(cmd);
         } else {
             System.out.println("Contact not found: " + name);
         }

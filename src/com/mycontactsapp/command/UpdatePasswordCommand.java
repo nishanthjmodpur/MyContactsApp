@@ -18,4 +18,7 @@ public class UpdatePasswordCommand implements Command {
         user.setPassword(hashed);
         System.out.println("Password updated.");
     }
+    
+    @Override
+    public void undo() {};
 }
